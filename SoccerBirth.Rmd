@@ -1,0 +1,31 @@
+---
+title: "Soccer_BirthDates"
+author: "Yuhan Wu"
+date: "6/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+
+```
+
+```{r}
+x <- read_csv("birthdates.csv",
+              col_types = cols(value = col_character()))
+```
+
+```{r}
+x %>% 
+  mutate(date = parse_date(str_sub(value, 2, 11))) %>% 
+  mutate(raw_month = months(date)) %>% 
+  mutate(month = parse_factor(raw_month, levels = month.name)) %>% 
+  group_by(month) %>% 
+  summarize(total = n())%>%
+  ggplot(mapping=aes(x=month, y=total,fill=month))+
+  geom_col()+
+  coord_flip()+
+  labs(title="Euro Soccer players and Birth dates",subtitle="Janurary?",x="Number of players",y="Birth Months")
+```
+
